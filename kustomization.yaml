@@ -1,8 +1,8 @@
-# ./kustomization.yaml
-resources:
-- base
+# # ./kustomization.yaml
+# resources:
+# - base
 
-patches:
-- path: ignore-deployment-mutation-patch.yaml
-  target:
-    kind: Deployment
+# patches:
+# - path: ignore-deployment-mutation-patch.yaml
+#   target:
+#     kind: Deployment
