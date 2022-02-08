@@ -12,5 +12,6 @@ spec:
   git:
    repo: https://github.com/AndreiHardziyenka/configsync-development
    branch: main
+   auth: none
    # The `noSSLVerify` field is supported in Anthos Config Management version 1.8.2 and later.
-   noSSLVerify: NAMESPACE_NO_SSL_VERIFY
+   noSSLVerify: false
