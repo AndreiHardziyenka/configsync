@@ -1,0 +1,16 @@
+# ROOT_REPO/namespaces/NAMESPACE/repo-sync.yaml
+ # If you are using a Config Sync version earlier than 1.8.0,
+ # use: apiVersion: configsync.gke.io/v1alpha1
+apiVersion: configsync.gke.io/v1beta1
+kind: RepoSync
+metadata:
+  name: repo-sync
+  namespace: development
+spec:
+  # Since this is for a namespace repository, the format should be unstructured
+  sourceFormat: unstructured
+  git:
+   repo: https://github.com/AndreiHardziyenka/configsync-development
+   branch: main
+   # The `noSSLVerify` field is supported in Anthos Config Management version 1.8.2 and later.
+   noSSLVerify: NAMESPACE_NO_SSL_VERIFY
