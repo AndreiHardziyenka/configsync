@@ -1,0 +1,99 @@
+{{- if $.Values.kong.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: {{ index .Values "kong-control-plane" "env" "pg_host" }}
+    app.kubernetes.io/component: gce-proxy
+  {{- include "kong.metaLabels" . | nindent 4 }}
+  name: {{ index .Values "kong-control-plane" "env" "pg_host" }}
+  namespace: {{ .Values.kongGceProxy.namespace }}
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      run: {{ index .Values "kong-control-plane" "env" "pg_host" }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: {{ index .Values "kong-control-plane" "env" "pg_host" }}
+    spec:
+      containers:
+        - command:
+            - /cloud_sql_proxy
+            - -credential_file=/secrets/cloudsql/credentials.json
+            - --dir=/cloudsql
+            - "-instances={{ .Values.kongGceProxy.connectionName }}=tcp:0.0.0.0:{{ .Values.kongGceProxy.port}}"
+          image: gcr.io/cloudsql-docker/gce-proxy:1.17
+          imagePullPolicy: IfNotPresent
+          name: gce-proxy
+          ports:
+            - containerPort: {{ .Values.kongGceProxy.port}}
+              name: gce
+              protocol: TCP
+          resources:
+            limits:
+              memory: 50Mi
+              cpu: 10m
+            requests:
+              memory: 50Mi
+              cpu: 5m
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /secrets/cloudsql
+              name: sa-kong-credentials
+            - mountPath: /cloudsql
+              name: cloudsql
+          securityContext:
+            capabilities:
+              drop:
+                - all
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 2000
+        runAsGroup: 2000
+        runAsUser: 65532
+        runAsNonRoot: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: sa-kong-credentials
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.kongGceProxy.existingSecret }}
+        - emptyDir:
+            medium: Memory
+          name: cloudsql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: {{ index .Values "kong-control-plane" "env" "pg_host" }}
+    app.kubernetes.io/component: gce-proxy-service
+  {{- include "kong.metaLabels" . | nindent 4 }}
+  name: {{ index .Values "kong-control-plane" "env" "pg_host" }}
+  namespace: {{ .Values.kongGceProxy.namespace }}
+spec:
+  ports:
+    - name: tcp
+      port: {{ .Values.kongGceProxy.port}}
+      protocol: TCP
+      targetPort: gce
+  selector:
+    run: {{ index .Values "kong-control-plane" "env" "pg_host" }}
+  sessionAffinity: None
+  type: ClusterIP
+---
+{{- end }}
