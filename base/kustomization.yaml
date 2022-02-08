@@ -1,6 +1,6 @@
-helmCharts:
-- name: system-chart
-  repo: ./charts/system-chart
-  version: 0.0.4
-  releaseName: argocd
-  namespace: argocd
+# helmCharts:
+# - name: system-chart
+#   repo: ./charts/system-chart
+#   version: 0.0.4
+#   releaseName: argocd
+#   namespace: argocd
