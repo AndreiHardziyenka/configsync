@@ -14,5 +14,3 @@ spec:
     targetRevision: {{ .Values.appOfApps.source.targetRevision | default "HEAD" | quote }}
   syncPolicy:
     automated: {}
-status:
-  sourceType: Directory
