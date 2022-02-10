@@ -2,5 +2,5 @@
 resources:
 - base
 
-helmGlobals:
-- chartHome: ./base/system-chart
+# helmGlobals:
+# - chartHome: ./base/system-chart
