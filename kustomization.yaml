@@ -3,4 +3,4 @@ resources:
 - base
 
 helmGlobals:
-- chartHome: ./system-chart
+- chartHome: ./base/system-chart
