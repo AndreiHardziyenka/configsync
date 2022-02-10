@@ -1,6 +1,6 @@
 helmCharts:
 - name: system-chart
-  # repo: ./system-chart
+  repo: ./charts
   # version: 2.2.5
   releaseName: system-chart
   namespace: system
