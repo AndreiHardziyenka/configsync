@@ -1,5 +1,5 @@
 helmCharts:
-- name: argo-cd
+- name: bitnami/argo-cd
   repo: https://charts.bitnami.com/bitnami
   version: 2.2.5
   releaseName: argocd
