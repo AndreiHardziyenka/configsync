@@ -3,7 +3,7 @@ helmGlobals:
 
 helmCharts:
 - name: system-chart
-  # repo: ./system-chart
+  repo: ./system-chart
   # version: 2.2.5
   releaseName: system-chart
   namespace: system
